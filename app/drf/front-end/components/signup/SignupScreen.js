@@ -10,7 +10,7 @@ import CustomText from '../customText/CustomText';
 import CustomTextInput from '../inputFields/CustomTextInput'; 
 import { CustomTouchableOpacity } from '../touchables/CustomTouchableOpacity';
 import { CustomTouchableScale } from '../touchables/CustomTouchableScale';
-
+import SuccessToast from '../toasts/SuccessToast';
 
 const SignupScreen = () => {
   const { signup } = useAuth();
@@ -25,9 +25,16 @@ const SignupScreen = () => {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
-  const validateUsername = (username) => username.length >= 3;
 
-  const validateEmail = (email) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email);
+  const validateUsername = (username) => {
+    const usernameRegex = /^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/;
+    return username.length >= 3 && usernameRegex.test(username);
+  };
+  
+  const validateEmail = (email) => {
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@(([^<>()[\]\\.,;:\s@"]+\.)+[^<>()[\]\\.,;:\s@"]{2,})$/i;
+    return emailRegex.test(email);
+  };
   
   const validatePassword = (password) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -38,34 +45,29 @@ const SignupScreen = () => {
   const handleSignup = () => {
 
     let isValid = true;
+    setUsernameError('');
+    setEmailError('');
+    setPasswordError('');
+    setConfirmPasswordError('');
 
-    // Username validation
+
     if (!validateUsername(username)) {
-      setUsernameError("Username must be at least 3 characters long.");
+      setUsernameError("Invalid username. At least 3 characters long and doesn't start with a special character");
       isValid = false;
-    } else {
-      setUsernameError("");
     }
-
-    // Email validation
+  
     if (!validateEmail(email)) {
-      setEmailError("Please enter a valid email address.");
+      setEmailError("Please enter a valid email address");
       isValid = false;
-    } else {
-      setEmailError("");
     }
-
-    // Password validation
+  
     if (!validatePassword(password)) {
-      setPasswordError("Password must meet complexity requirements.");
+      setPasswordError("Password must fulfill security requirements");
       isValid = false;
-    } else {
-      setPasswordError("");
     }
-
     // Confirm password validation
     if (password !== confirmPassword) {
-      setConfirmPasswordError("Passwords do not match.");
+      setConfirmPasswordError("Passwords do not match");
       isValid = false;
     } else {
       setConfirmPasswordError("");
@@ -77,29 +79,34 @@ const SignupScreen = () => {
       axios.post(`http://${baseEndpoint}/register`, userData)
         .then(response => {
           if (response.data.status === "ok") {
-            Alert.alert("Success", "User Created Successfully");
-            signup(); 
+            setSuccessMessage('User Created Successfully 👋');
+            signup();
           } else {
-            Alert.alert("Signup Failed", JSON.stringify(response.data));
+            setErrorMessage('Signup failed. Please try again'); 
           }
         })
         .catch(error => {
           if (error.response) {
-            const data = error.response.data;
-            if (data.errors && data.errors.username) {
-              setUsernameError(data.errors.username); 
+            const errorMessage = error.response.data.message;
+            if (errorMessage.includes("Username")) {
+              setUsernameError(errorMessage);
+            } else if (errorMessage.includes("Email")) {
+              setEmailError(errorMessage);
             }
-            if (data.errors && data.errors.email) {
-              setEmailError(data.errors.email); 
-            }
+            setErrorMessage(errorMessage); 
           } else if (error.request) {
-            Alert.alert("Network Error", "No response from server");
+            setErrorMessage("Network Error: No response from server");
           } else {
-            Alert.alert("Error", error.message);
+            setErrorMessage("An unexpected error occurred");
           }
         });
     }
   };
+
+
+  const [successMessage, setSuccessMessage] = React.useState('');
+  const [errorMessage, setErrorMessage] = React.useState('');
+
 
   return (
     <LinearGradient
@@ -184,6 +191,8 @@ const SignupScreen = () => {
           <CustomText style={styles.buttonTextOutlineSignup}> Log In</CustomText>
         </CustomTouchableOpacity>
       </View>
+      {successMessage && <SuccessToast message={successMessage} />}
+      {errorMessage && <ErrorToast message={errorMessage} />}
     </LinearGradient>
   );
 };
