@@ -10,7 +10,10 @@ import CustomText from '../customText/CustomText';
 import CustomTextInput from '../inputFields/CustomTextInput'; 
 import { CustomTouchableOpacity } from '../touchables/CustomTouchableOpacity';
 import { CustomTouchableScale } from '../touchables/CustomTouchableScale';
+import Toast from 'react-native-toast-message';
 
+
+//TODO: Password info for user + strength bar + TOKENS + particle background
 
 const SignupScreen = () => {
   const { signup } = useAuth();
@@ -25,8 +28,19 @@ const SignupScreen = () => {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
-  const validateUsername = (username) => username.length >= 3;
-
+  const validateUsername = (username) => {
+    if (username.length < 3) {
+      return "Username must be at least 3 characters long.";
+    }
+    if (/^[!@#$%^&*(),.?":{}|<>]/.test(username.charAt(0))) {
+      return "Username cannot start with a special character.";
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      return "Username can only contain letters, numbers, and underscores.";
+    }
+    return "";
+  };
+  
   const validateEmail = (email) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email);
   
   const validatePassword = (password) => {
@@ -34,36 +48,26 @@ const SignupScreen = () => {
     return passwordRegex.test(password);
   };
   
-  //TODO: CHECK IF USER EXISTS + PERFECT VALIDATION + TOKENS
   const handleSignup = () => {
 
     let isValid = true;
-
-    // Username validation
-    if (!validateUsername(username)) {
-      setUsernameError("Username must be at least 3 characters long.");
+    const usernameError = validateUsername(username);
+    if (usernameError) {
+      setUsernameError(usernameError);
       isValid = false;
-    } else {
-      setUsernameError("");
     }
-
-    // Email validation
     if (!validateEmail(email)) {
       setEmailError("Please enter a valid email address.");
       isValid = false;
     } else {
       setEmailError("");
     }
-
-    // Password validation
     if (!validatePassword(password)) {
       setPasswordError("Password must meet complexity requirements.");
       isValid = false;
     } else {
       setPasswordError("");
     }
-
-    // Confirm password validation
     if (password !== confirmPassword) {
       setConfirmPasswordError("Passwords do not match.");
       isValid = false;
@@ -77,26 +81,47 @@ const SignupScreen = () => {
       axios.post(`http://${baseEndpoint}/register`, userData)
         .then(response => {
           if (response.data.status === "ok") {
-            Alert.alert("Success", "User Created Successfully");
+            Toast.show({
+              type: 'success',
+              text1: 'Account created!',
+              text2: 'Welcome to Quest 👋'
+            });
             signup(); 
-          } else {
-            Alert.alert("Signup Failed", JSON.stringify(response.data));
+          } 
+          if (response.data.status === "user and email taken"){
+            setUsernameError("Username is already taken");
+            setEmailError("Email already has an account");
+          }
+          if (response.data.status === "user taken") {
+            setUsernameError("Username is already taken");
+          }
+          if (response.data.status === "email taken") {
+            setEmailError("Email already has an account");
           }
         })
         .catch(error => {
-          if (error.response) {
-            const data = error.response.data;
-            if (data.errors && data.errors.username) {
-              setUsernameError(data.errors.username); 
-            }
-            if (data.errors && data.errors.email) {
-              setEmailError(data.errors.email); 
+          setUsernameError("");
+          setEmailError("");
+  
+          if (error.response && error.response.data) {
+            const errorMessage = error.response.data.data;
+            if (errorMessage === "Username is already taken") {
+              setUsernameError("Username is already taken.");
+            } else if (errorMessage === "Email already has an account") {
+              setEmailError("Email already has an account.");
             }
           } else if (error.request) {
-            Alert.alert("Network Error", "No response from server");
+            Toast.show({
+              type: 'error',
+              text1: 'Network Error',
+              text2: 'Try again in a minute'
+            });
           } else {
-            Alert.alert("Error", error.message);
-          }
+            Toast.show({
+              type: 'error',
+              text1: 'Ooops',
+              text2: 'Something went wrong!'
+            });          }
         });
     }
   };
@@ -121,9 +146,9 @@ const SignupScreen = () => {
         value={username}
         onChangeText={(text) => {
           setUsername(text);
-          setUsernameError(false); 
-        }}       
-        maxLength={20}
+          setUsernameError(""); 
+        }}
+        maxLength={80}
         error={usernameError}
       />
 
@@ -133,11 +158,11 @@ const SignupScreen = () => {
         value={email}
         onChangeText={(text) => {
           setEmail(text);
-          setEmailError(false); 
-        }}   
+          setEmailError("");
+        }}
         keyboardType="email-address"
         maxLength={320}
-        error={emailError}
+        error={emailError} 
       />
 
       <CustomTextInput

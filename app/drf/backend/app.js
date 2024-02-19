@@ -24,10 +24,18 @@ app.get("/", (req,res)=>{
 
 app.post('/register', async(req, res)=>{
     const {username, email, password} = req.body;
-    const oldUser = await User.findOne({email:email});
-    if(oldUser){
-        return res.send({data: "User already exists"});
+    const oldUserEmail = await User.findOne({email:email});
+    const oldUserUser= await User.findOne({username:username});
+    if(oldUserUser || oldUserEmail){
+        if (oldUserUser && oldUserEmail){
+        return res.send({status:"user and email taken", data: "user and email taken"});
+        }else if (oldUserUser && (!oldUserEmail)){
+            return res.send({status:"user taken", data: "user taken"});
+        }else if ((!oldUserUser) && oldUserEmail){
+            return res.send({status:"email taken", data: "email taken"});
+        }
     }
+    
 
     const encryptedPassword = await bcrypt.hash(password,10);
     try {
