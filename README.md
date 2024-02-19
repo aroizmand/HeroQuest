@@ -1,4 +1,4 @@
-# HeroMetrics
+# Hero Quest
 
 HeroMetrics is a unique app developed with React Native and Expo, designed to calculate and visualize your development levels in a fun, RPG-style format. Whether you're looking to track your progress in physical fitness, mental acuity, or other personal growth areas, HeroMetrics turns your journey into an engaging adventure. With area charts to track your progress in different realms such as strength, intelligence, agility, and more, HeroMetrics is the ultimate companion in your quest for self-improvement.
 
