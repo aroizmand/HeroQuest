@@ -24,18 +24,18 @@ app.get("/", (req,res)=>{
 
 app.post('/register', async(req, res)=>{
     const {username, email, password} = req.body;
-
-    // Check if email already exists
-    const emailExists = await User.findOne({email: email});
-    if(emailExists){
-        return res.status(400).send({status: "error", message: "Email already in use"});
+    const oldUserEmail = await User.findOne({email:email});
+    const oldUserUser= await User.findOne({username:username});
+    if(oldUserUser || oldUserEmail){
+        if (oldUserUser && oldUserEmail){
+        return res.send({status:"user and email taken", data: "user and email taken"});
+        }else if (oldUserUser && (!oldUserEmail)){
+            return res.send({status:"user taken", data: "user taken"});
+        }else if ((!oldUserUser) && oldUserEmail){
+            return res.send({status:"email taken", data: "email taken"});
+        }
     }
-
-    // Check if username already exists
-    const usernameExists = await User.findOne({username: username});
-    if(usernameExists){
-        return res.status(400).send({status: "error", message: "Username already taken"});
-    }
+    
 
     // Proceed with user creation if username and email are unique
     const encryptedPassword = await bcrypt.hash(password, 10);

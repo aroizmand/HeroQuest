@@ -5,7 +5,14 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      padding: 20,
+      paddingTop: 20,
+      paddingHorizontal:20,
+    },
+    scrollViewContent: {
+      flexGrow: 1,
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      minHeight: '100%', 
     },
     headerContainer: {
       marginBottom: 20,
