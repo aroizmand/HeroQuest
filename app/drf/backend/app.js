@@ -37,18 +37,20 @@ app.post('/register', async(req, res)=>{
     }
     
 
-    const encryptedPassword = await bcrypt.hash(password,10);
+    // Proceed with user creation if username and email are unique
+    const encryptedPassword = await bcrypt.hash(password, 10);
     try {
-        await User.create({
-            username: username, 
-            email: email,
+        const newUser = await User.create({
+            username, 
+            email,
             password: encryptedPassword,
         });
-        res.send({status:"ok", data:"User Created"});
+        res.status(201).send({status: "ok", message: "User created successfully"});
     } catch (error) {
-        res.send({status:'error', data: error});
+        res.status(500).send({status: "error", message: "An error occurred during user registration"});
     }
-})
+});
+
 
 app.listen(5001, ()=>{
     console.log('Server Started');

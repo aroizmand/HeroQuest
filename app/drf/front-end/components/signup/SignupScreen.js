@@ -134,6 +134,7 @@ const SignupScreen = () => {
             } else if (errorMessage === "Email already has an account") {
               setEmailError("Email already has an account.");
             }
+            setErrorMessage(errorMessage); 
           } else if (error.request) {
             Toast.show({
               type: 'error',
@@ -146,10 +147,16 @@ const SignupScreen = () => {
               text1: 'Ooops',
               text2: 'Something went wrong!'
             });          
+
           }
         });
     }
   };
+
+
+  const [successMessage, setSuccessMessage] = React.useState('');
+  const [errorMessage, setErrorMessage] = React.useState('');
+
 
   return (
     <LinearGradient
