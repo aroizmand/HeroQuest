@@ -1,42 +1,65 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-const PasswordStrengthBar = ({ strength }) => {
+const PasswordStrengthBar = ({ password }) => {
+  const calculateStrength = (password) => {
+    let strength = 0;
+    if (password.length > 5) strength += 1;
+    if (password.length > 7) strength += 1;
+    if (/[A-Z]/.test(password)) strength += 1;
+    if (/[0-9]/.test(password)) strength += 1;
+    if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+
+    return strength;
+  };
+
+  const getColor = (index, strength) => {
+    if (index >= strength) return '#A0A0A0'; 
+  
+    switch (strength) {
+      case 1:
+      case 2:
+        return '#FF073A'; 
+      case 3:
+        return '#FF7F00'; 
+      case 4:
+        return '#FFFF33'; 
+      case 5:
+        return '#33FF00'; 
+      default:
+        return '#A0A0A0'; 
+    }
+  };
+  
+
+  const strength = calculateStrength(password);
+  const strengthBar = Array.from({ length: 5 }, (_, i) => ({
+    color: getColor(i, strength),
+  }));
+
   return (
     <View style={styles.container}>
-      <View style={[styles.strengthBar, { width: `${strength}%` }, strengthColor(strength)]} />
+      {strengthBar.map((bar, index) => (
+        <View
+          key={index}
+          style={[styles.barUnit, { backgroundColor: bar.color, borderRadius:10, }]}
+        />
+      ))}
     </View>
   );
 };
 
-const strengthColor = (strength) => {
-  if (strength < 25) {
-    return styles.weak;
-  } else if (strength < 50) {
-    return styles.fair;
-  } else if (strength < 75) {
-    return styles.good;
-  } else {
-    return styles.strong;
-  }
-};
-
 const styles = StyleSheet.create({
   container: {
-    height: 10,
-    width: '100%',
-    backgroundColor: '#e0e0e0',
-    borderRadius: 5,
-    marginTop: 10,
+    flexDirection: 'row',
+    height: 2,
+    marginBottom: 10,
+    width: 250,
   },
-  strengthBar: {
-    height: '100%',
-    borderRadius: 5,
+  barUnit: {
+    flex: 1,
+    marginHorizontal: 2,
   },
-  weak: { backgroundColor: '#ff3e3e' },
-  fair: { backgroundColor: '#ffae00' },
-  good: { backgroundColor: '#f7d002' },
-  strong: { backgroundColor: '#12cc12' },
 });
 
 export default PasswordStrengthBar;
