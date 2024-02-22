@@ -4,7 +4,7 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import { useAuth } from '../context/AuthContext'; // Adjust the import path as needed
+import { useAuth } from '../context/AuthContext'; 
 
 
 const CustomDrawerContent = (props) => {

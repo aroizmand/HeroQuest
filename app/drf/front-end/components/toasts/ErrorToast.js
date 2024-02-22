@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 import CustomText from "../customText/CustomText";
 import { LinearGradient } from 'expo-linear-gradient'; 
 
-const SuccessToast= ({text1, text2}) => {
+const ErrorToast= ({text1, text2}) => {
     return(
     <View style={styles.toastContainer}>
       <CustomText style={styles.toastTextPrimary} fontType={"subtitle"}>{text1}</CustomText>
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     width: '85%',
     padding: 20,
     justifyContent: "center", 
-    backgroundColor:"rgba(124, 176, 120,0.9)",    
+    backgroundColor:"rgba(191, 105, 109,0.9)",    
     borderRadius:10 
   },
   toastTextPrimary: {
@@ -30,4 +30,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SuccessToast;
+export default ErrorToast;

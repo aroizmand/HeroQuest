@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import { View} from 'react-native';
+import { ImageBackground, View} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
+import axios from 'axios';
+import baseEndpoint from "../../endPointConfig";
 import { useAuth } from '../context/AuthContext';
 import CustomText from '../customText/CustomText';
 import styles from './styles';
@@ -9,6 +10,7 @@ import { CustomTouchableScale } from '../touchables/CustomTouchableScale';
 import { CustomTouchableOpacity } from '../touchables/CustomTouchableOpacity';
 import CustomTextInput from '../inputFields/CustomTextInput';
 
+// TODO: FRONT END VALIDATION + error messages
 
 const LoginScreen = () => {
   const { login } = useAuth();
@@ -21,22 +23,51 @@ const LoginScreen = () => {
   const [isLogin, setIsLogin] = useState(true);
 
   const handleLogin = () => {
-    login();
-  };
-
-
-  return (
+    const userData = {
+      email: email,
+      password: password,
+    };
+  
+    axios.post(`http://${baseEndpoint}/login`, userData)
+      .then(res => {
+        if (res.data.status === "ok") {
+          login(res.data.data);
+        } else {
+          setIsError(true);
+          setMessage("Login failed. Please check your credentials."); 
+        }
+      })
+      .catch(error => {
+        setIsError(true);
+          if (error.response) {
+            const { status, data } = error.response;
+              switch (status) {
+                case 404:
+                    console.log("User not found. Please check your email.");
+                    break;
+                case 401:
+                    console.log("Invalid credentials. Please try again.");
+                    break;
+                default:
+                    console.log("Login error:", error);
+                    setMessage(data.message || "An unexpected error occurred. Please try again.");
+            }
+        } else {
+            console.log("Login error:", error);
+            setMessage("Unable to connect to the server. Please check your connection and try again.");
+        }
+    });
     
-    <LinearGradient
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        colors={['#000000', '#000000', '#0a0a0a']}
-        locations={[0, 0.74, 1]}
-        style={styles.container}
-      >
+  }
+  
+  return ( 
+    <ImageBackground
+      source={require('../../assets/low-poly-grid-haikei.png')} 
+      style={styles.container}
+    >
         <View style={styles.headerContainer}>
-          <CustomText style={styles.title} fontType="subtitle">Welcome Back</CustomText>
-          <CustomText style={styles.subtitle} fontType="body">Log in to continue</CustomText>
+          <CustomText style={styles.title} fontType="logo">Welcome Player</CustomText>
+          <CustomText style={styles.subtitle} fontType="body">It's time to level up</CustomText>
         </View>
         
         
@@ -72,7 +103,7 @@ const LoginScreen = () => {
             <CustomText style={styles.buttonTextOutlineSignup}> Sign Up</CustomText>
           </CustomTouchableOpacity>
         </View>
-    </LinearGradient>
+    </ImageBackground>
   );
 };
 
