@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef} from "react";
 import { AuthProvider } from "./components/context/AuthContext";
 import AppNavigator from "./components/navigators/AppNavigator";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -8,6 +8,7 @@ import * as SystemUI from 'expo-system-ui';
 import Toast from 'react-native-toast-message';
 import SuccessToast from "./components/toasts/SuccessToast";
 import ErrorToast from "./components/toasts/ErrorToast";
+
 SystemUI.setBackgroundColorAsync("black");
 
 const toastConfig = {
