@@ -1,7 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import CustomText from "../customText/CustomText";
-import { LinearGradient } from 'expo-linear-gradient'; 
 
 const ErrorToast= ({text1, text2}) => {
     return(
