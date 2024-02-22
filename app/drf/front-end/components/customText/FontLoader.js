@@ -7,6 +7,7 @@ SplashScreen.preventAutoHideAsync();
 
 const FontLoader = ({ children }) => {
   let [fontsLoaded] = useFonts({
+    'Logo': require('../../assets/fonts/Aquire-BW0ox.otf'),
     'Poppins-Black': require('../../assets/fonts/Poppins-Black.ttf'),
     'Poppins-Bold': require('../../assets/fonts/Poppins-Bold.ttf'),
     'Poppins-ExtraBoldItalic': require('../../assets/fonts/Poppins-ExtraBoldItalic.ttf'),

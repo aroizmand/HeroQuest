@@ -13,7 +13,6 @@ const DrawerNavigator = () => {
       <Drawer.Screen name="Home" component={TabNavigator} />
       <Drawer.Screen name="Settings" component={SettingsScreen} />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
-      {/* Add other drawer items here */}
     </Drawer.Navigator>
   );
 };

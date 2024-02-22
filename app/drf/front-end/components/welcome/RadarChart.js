@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
 import { Polygon, Line, Text, Svg } from 'react-native-svg';
-import { useSpring, animated } from 'react-spring';
+import { useSpring, animated } from '@react-spring/native';
 
 const AnimatedPolygon = animated(Polygon);
 
 const RadarChart = () => {
-    const size = 180;
+    const size = 250;
     const svgSize = size + 40;
     const center = svgSize / 2;
     const radius = size * 0.4;
@@ -39,7 +39,7 @@ const RadarChart = () => {
     const springProps = useSpring({
         to: { points: calculatePoints(attributeValues) },
         from: { points: calculatePoints(initialAttributeValues) },
-        config: { duration: 800 },
+        config: { duration: 1000 },
     });
 
     // Function to generate new attribute values randomly
@@ -56,7 +56,7 @@ const RadarChart = () => {
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             setAttributeValues(generateNewValues());
-        }, 800); 
+        }, 1000); 
 
         return () => clearTimeout(timeoutId);
     }, [attributeValues]);

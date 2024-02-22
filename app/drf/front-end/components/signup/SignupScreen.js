@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { View, ScrollView } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { View, ScrollView, ImageBackground } from 'react-native';
 import axios from 'axios';
 import baseEndpoint from "../../endPointConfig";
 import styles from './styles';
@@ -13,7 +12,7 @@ import Toast from 'react-native-toast-message';
 import PasswordStrengthBar from './PasswordStrengthBar';
 
 
-//TODO: TOKENS + particle background
+//TODO: TOKENS 
 
 const SignupScreen = () => {
   const navigation = useNavigation();
@@ -77,13 +76,16 @@ const SignupScreen = () => {
     if (!/[^A-Za-z0-9]/.test(password)) {
       errors.push("Password must contain at least one special character.");
     }
+    if (/\s/.test(password)) { 
+      errors.push("Password must not contain spaces.");
+    }
   
     return errors.length > 0 ? errors.join('\n') : "";
   };
   
+  
   const handleSignup = () => {
     let isValid = true;
-  
     const usernameValidationResult = validateUsername(username);
     setUsernameError(usernameValidationResult);
     isValid = isValid && !usernameValidationResult;
@@ -106,8 +108,8 @@ const SignupScreen = () => {
         .then(response => {
           if (response.data.status === "ok") {
             Toast.show({
-              type: 'success',
-              text1: 'Account created!',
+              type: 'successToast',
+              text1: 'Account created',
               text2: 'Login to continue'
             });
             navigation.navigate('Login'); 
@@ -137,13 +139,13 @@ const SignupScreen = () => {
             setErrorMessage(errorMessage); 
           } else if (error.request) {
             Toast.show({
-              type: 'error',
+              type: 'errorToast',
               text1: 'Network Error',
               text2: 'Try again in a minute'
             });
           } else {
             Toast.show({
-              type: 'error',
+              type: 'errorToast',
               text1: 'Ooops',
               text2: 'Something went wrong!'
             });          
@@ -159,20 +161,17 @@ const SignupScreen = () => {
 
 
   return (
-    <LinearGradient
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        colors={['#000000', '#000000', '#0a0a0a']}
-        locations={[0, 0.74, 1]}
-        style={styles.container}
-      >
+    <ImageBackground
+      source={require('../../assets/low-poly-grid-haikei.png')} 
+      style={styles.container}
+    >
         <ScrollView
             contentContainerStyle={styles.scrollViewContent}
             keyboardShouldPersistTaps="handled"
           >
         <View style={styles.headerContainer}>
-          <CustomText style={styles.title} fontType="subtitle">Welcome to Quest</CustomText>
-          <CustomText style={styles.subtitle} fontType="body">Sing up to continue</CustomText>
+          <CustomText style={styles.title} fontType="logo">Become a Player</CustomText>
+          <CustomText style={styles.subtitle} fontType="body">Join the adventure and start your quest</CustomText>
         </View>
 
         <CustomTextInput
@@ -181,7 +180,7 @@ const SignupScreen = () => {
           placeholder="Username"
           value={username}
           onChangeText={(text) => {
-            setUsername(text);
+            setUsername(text.trim());
             setUsernameError(""); 
           }}
           maxLength={25}
@@ -194,7 +193,7 @@ const SignupScreen = () => {
           placeholder="Email"
           value={email}
           onChangeText={(text) => {
-            setEmail(text);
+            setEmail(text.toLowerCase().trim());
             setEmailError("");
           }}
           keyboardType="email-address"
@@ -208,7 +207,7 @@ const SignupScreen = () => {
           placeholder="Password"
           value={password}
           onChangeText={(text) => {
-            setPassword(text);
+            setPassword(text.trim());
             setPasswordError(false); 
           }}   
           secureTextEntry={true}
@@ -226,7 +225,7 @@ const SignupScreen = () => {
           placeholder="Confirm Password"
           value={confirmPassword}
           onChangeText={(text) => {
-            setConfirmPassword(text);
+            setConfirmPassword(text.trim());
             setConfirmPasswordError(false); 
           }}   
           secureTextEntry={true}
@@ -252,7 +251,7 @@ const SignupScreen = () => {
           </CustomTouchableOpacity>
         </View>
       </ScrollView>
-    </LinearGradient>
+    </ImageBackground>
   );
 };
 
