@@ -3,16 +3,13 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingTop: 20,
-      paddingHorizontal:20,
     },
     scrollViewContent: {
       flexGrow: 1,
       justifyContent: 'center', 
       alignItems: 'center', 
-      minHeight: '100%', 
+      minHeight: '100%',
+      padding:20 
     },
     headerContainer: {
       marginBottom: 20,

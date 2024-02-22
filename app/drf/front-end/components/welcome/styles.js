@@ -8,10 +8,10 @@ const styles = StyleSheet.create({
       padding: 20,
     },
     headerContainer: {
-      marginVertical: 50,
+      marginVertical: 20,
     },
     title: {
-      fontSize: 24,
+      fontSize: 38,
       textAlign: 'center',
       marginBottom: 20,
     },

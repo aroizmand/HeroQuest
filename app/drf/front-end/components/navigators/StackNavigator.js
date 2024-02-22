@@ -13,7 +13,7 @@ const StackNavigator = ({ onLogin }) => {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid, 
+        cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter, 
         cardStyle: { backgroundColor: 'black' }, 
       }}
     >

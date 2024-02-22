@@ -26,6 +26,11 @@ const CustomTextInput = ({
     return null;
   };
 
+  const handleTextChange = (text) => {
+    const trimmedText = text.trim(); 
+    onChangeText(trimmedText); 
+  };
+
   return (
     <View style={styles.container}>
       <View style={[styles.inputContainer, error ? styles.errorBorder : styles.defaultBorder]}>
@@ -36,7 +41,7 @@ const CustomTextInput = ({
           placeholderTextColor="#868E96"
           secureTextEntry={isSecureEntry}
           maxLength={maxLength}
-          onChangeText={onChangeText}
+          onChangeText={handleTextChange}
           autoCapitalize="none"
         />
         {rightIcon && (

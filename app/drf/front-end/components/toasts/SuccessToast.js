@@ -1,34 +1,34 @@
-import React from 'react';
-import Toast from 'react-native-toast-message';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import CustomText from "../customText/CustomText";
+import { LinearGradient } from 'expo-linear-gradient'; 
 
-const SuccessToast = ({ message }) => {
-  const showToast = () => {
-    Toast.show({
-      type: 'success',
-      position: 'top', 
-      text1: 'Success',
-      text2: message,
-      visibilityTime: 4000, 
-      autoHide: true, 
-      topOffset: 30, 
-      style: { backgroundColor: 'black' }, 
-      textStyle: { color: '#ffffff' }, 
-      text1Style: {
-        fontSize: 18, 
-        fontWeight: 'bold',
-      },
-      text2Style: {
-        fontSize: 16, 
-        color: '#868E96' 
-      },
-    });
-  };
+const SuccessToast= ({text1, text2}) => {
+    return(
+    <View style={styles.toastContainer}>
+      <CustomText style={styles.toastTextPrimary} fontType={"subtitle"}>{text1}</CustomText>
+      <CustomText style={styles.toastTextSecondary}>{text2}</CustomText>
+    </View>
+)}
 
-  React.useEffect(() => {
-    showToast();
-  }, []);
+const styles = StyleSheet.create({
+  toastContainer: {
+    height: 68,
+    width: '85%',
+    padding: 20,
+    justifyContent: "center", 
+    backgroundColor:"rgba(124, 176, 120,0.9)",    
+    borderRadius:10 
+  },
+  toastTextPrimary: {
+    color: 'white', 
+    fontSize: 18,
+  },
+  toastTextSecondary: {
+    color: '#fff', 
+    fontSize: 14,
+  },
+});
 
-  return null;
-};
 
 export default SuccessToast;

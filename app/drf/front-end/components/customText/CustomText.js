@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 
 const fontTypes = {
+  logo: "Logo",
   title: 'Poppins-Bold',
   subtitle: 'Poppins-Medium',
   body: 'Poppins-Regular',
