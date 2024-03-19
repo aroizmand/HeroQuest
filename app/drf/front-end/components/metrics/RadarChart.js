@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { View } from "react-native";
 import { Polygon, Line, Text, Svg } from "react-native-svg";
-import { useSpring, animated } from "@react-spring/native";
 
-const AnimatedPolygon = animated(Polygon);
-
-const RadarChart = () => {
+const RadarChart = ({ attributeValues }) => {
   const size = 250;
   const svgSize = size + 40;
   const center = svgSize / 2;
@@ -13,21 +10,12 @@ const RadarChart = () => {
   const angles = [0, 60, 120, 180, 240, 300];
   const layers = 5;
 
-  const initialAttributeValues = {
-    Strength: 50,
-    Agility: 50,
-    Intelligence: 50,
-    Endurance: 50,
-    Wisdom: 50,
-    Charisma: 50,
-  };
-
-  const [attributeValues, setAttributeValues] = useState(
-    initialAttributeValues
-  );
-
   // Function to convert attribute values to SVG polygon points
   const calculatePoints = (values) => {
+    if (!values) {
+      return "";
+    }
+
     return angles
       .map((angle, index) => {
         const attributeKeys = Object.keys(values);
@@ -41,32 +29,7 @@ const RadarChart = () => {
       .join(" ");
   };
 
-  // Animated spring for the points
-  const springProps = useSpring({
-    to: { points: calculatePoints(attributeValues) },
-    from: { points: calculatePoints(initialAttributeValues) },
-    config: { duration: 1000 },
-  });
-
-  // Function to generate new attribute values randomly
-  const generateNewValues = () => {
-    let newValues = {};
-    Object.keys(attributeValues).forEach((key) => {
-      newValues[key] =
-        attributeValues[key] + (Math.random() < 0.5 ? -1 : 1) * 20;
-      newValues[key] = Math.max(0, Math.min(100, newValues[key]));
-    });
-    return newValues;
-  };
-
-  // UseEffect to trigger a new animation cycle after each one completes
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setAttributeValues(generateNewValues());
-    }, 1000);
-
-    return () => clearTimeout(timeoutId);
-  }, [attributeValues]);
+  const points = calculatePoints(attributeValues);
 
   return (
     <View style={{ opacity: 0.8 }}>
@@ -107,36 +70,37 @@ const RadarChart = () => {
           />
         ))}
 
-        {/* Animated Data Layer */}
-        <AnimatedPolygon
-          points={springProps.points}
+        {/* Data Layer */}
+        <Polygon
+          points={points}
           fill="rgba(255, 255, 255, 0.2)"
           stroke="cyan"
           strokeWidth="2"
         />
 
         {/* Labels */}
-        {Object.keys(initialAttributeValues).map((label, index) => {
-          const angle = angles[index];
-          const x =
-            center + (radius + 20) * Math.cos((angle - 90) * (Math.PI / 180));
-          const y =
-            center + (radius + 20) * Math.sin((angle - 90) * (Math.PI / 180));
-          return (
-            <Text
-              key={label}
-              x={x}
-              y={y}
-              fill="white"
-              fontSize="10"
-              fontWeight="bold"
-              textAnchor="middle"
-              alignmentBaseline="middle"
-            >
-              {label}
-            </Text>
-          );
-        })}
+        {attributeValues &&
+          Object.keys(attributeValues).map((label, index) => {
+            const angle = angles[index];
+            const x =
+              center + (radius + 20) * Math.cos((angle - 90) * (Math.PI / 180));
+            const y =
+              center + (radius + 20) * Math.sin((angle - 90) * (Math.PI / 180));
+            return (
+              <Text
+                key={label}
+                x={x}
+                y={y}
+                fill="white"
+                fontSize="10"
+                fontWeight="bold"
+                textAnchor="middle"
+                alignmentBaseline="middle"
+              >
+                {label}
+              </Text>
+            );
+          })}
       </Svg>
     </View>
   );
