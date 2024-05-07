@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Modal, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  View,
+  Modal,
+  KeyboardAvoidingView,
+  Platform,
+  ImageBackground,
+} from "react-native";
 import MetricInputScreen from "../metrics/MetricInputScreen";
 import styles from "./styles";
 
@@ -13,14 +19,16 @@ const StartingModal = ({ modalVisible, setModalVisible, navigation }) => {
         setModalVisible(!modalVisible);
       }}
     >
-      <KeyboardAvoidingView
+      <ImageBackground
         style={styles.centeredView}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        source={require("../../assets/low-poly-grid-haikei.png")}
       >
-        <View style={styles.modalView}>
-          <MetricInputScreen navigation={navigation} />
+        <View>
+          <View style={styles.modalView}>
+            <MetricInputScreen navigation={navigation} />
+          </View>
         </View>
-      </KeyboardAvoidingView>
+      </ImageBackground>
     </Modal>
   );
 };

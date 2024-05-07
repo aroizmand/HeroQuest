@@ -12,20 +12,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalView: {
+    paddingTop: 20,
     width: "100%",
     height: "100%",
-    backgroundColor: "black",
-    paddingBottom: 35,
-    paddingTop: 20,
     alignItems: "center",
-    shadowColor: "white",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
   },
   modalTitle: {
     marginBottom: 10,
