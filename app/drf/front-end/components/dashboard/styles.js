@@ -10,12 +10,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContent: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: "transparent",
   },
   modalView: {
     paddingTop: 20,
     width: "100%",
     height: "100%",
     alignItems: "center",
+    backgroundColor: "transparent",
   },
   modalTitle: {
     marginBottom: 10,
@@ -47,5 +54,12 @@ const styles = StyleSheet.create({
     marginRight: 0,
     marginBottom: 10,
   },
+  closeButton: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    zIndex: 1,
+  },
 });
+
 export default styles;
